@@ -3,26 +3,31 @@ import os
 from core.snm import SortedNeighborhoodMethod
 from core.tc import TransitiveClosure
 from core.analyzers import *
+from core.comparators import *
 from data.reader import *
 
 class DuplicateDetector(object):
 
-  ANALYZER = DummyAnalyzer()
   WINDOW_SIZE = 20
   OUT_DIR = '../out/'
   OUT_FILE = 'result.txt'
 
-  def __init__(self, reader):
+  def __init__(self, reader, analyzer, comparators):
     self.reader = reader
+    self.analyzer = analyzer
+    self.comparators = comparators
 
   def find_duplicates(self):
     tuples = self.reader.get_tuples()
-    smm = SortedNeighborhoodMethod(
-      self.ANALYZER.compare, self.ANALYZER.is_same,
-      tuples, self.WINDOW_SIZE)
+    duplicates = set()
 
-    print "Finding duplicates..."
-    duplicates = smm.find_duplicates()
+    for i, comparator in enumerate(self.comparators):
+      print "Finding duplicates (%d / %d)..." % (i + 1, len(self.comparators))
+      smm = SortedNeighborhoodMethod(
+        comparator.compare, self.analyzer.is_same,
+        tuples, self.WINDOW_SIZE)
+      duplicates = duplicates.union(smm.find_duplicates())
+
     print "Computing transitive closure..."
     duplicate_tuples = TransitiveClosure(duplicates).get_tuples()
 
@@ -35,4 +40,8 @@ class DuplicateDetector(object):
 
 
 if __name__ == '__main__':
-  DuplicateDetector(CDReader()).find_duplicates()
+  reader = CDReader()
+  analyzer = DummyAnalyzer()
+  comparators = [DummyComparator()]
+
+  DuplicateDetector(reader, analyzer, comparators).find_duplicates()
