@@ -7,9 +7,8 @@ class AddressCleaner:
 
   def clean_street_name(self, street_name):
     return (street_name
-        .replace('str.', '')
-        .replace('strasse', '')
-        .replace('straße', '')
+        .replace('strasse', 'str.')
+        .replace('straße', 'str.')
         .strip())
 
 class PhoneNumberCleaner:
