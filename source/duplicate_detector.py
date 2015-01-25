@@ -18,6 +18,7 @@ class DuplicateDetector(object):
     self.comparators = comparators
 
   def find_duplicates(self):
+    print "Reading dataset..."
     tuples = self.reader.get_tuples()
     duplicates = set()
 
@@ -40,8 +41,8 @@ class DuplicateDetector(object):
 
 
 if __name__ == '__main__':
-  reader = CDReader()
-  analyzer = DummyAnalyzer()
-  comparators = [DummyComparator()]
+  reader = AddressesReader()
+  analyzer = AddressesGoldAnalyzer()
+  comparators = [AddressesGoldComparator()]
 
   DuplicateDetector(reader, analyzer, comparators).find_duplicates()
