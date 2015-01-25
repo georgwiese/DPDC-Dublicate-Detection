@@ -17,7 +17,7 @@ class Reader:
     with open(self.filename) as csvfile:
       reader = csv.DictReader(csvfile)
       for row in reader:
-        tupled_row = tuple(row[attribute] for attribute in self.ATTRIBUTES)
+        tupled_row = tuple(row[attribute].lowercase().strip() for attribute in self.ATTRIBUTES)
         tupled_row = (int(tupled_row[0]),) + tupled_row[1:]
         tuples.append(tupled_row)
     return tuples
