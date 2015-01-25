@@ -8,8 +8,10 @@ class SortedNeighborhoodMethod(object):
 
   def find_duplicates(self):
     result = []
+    print "[SNM] Sorting..."
     sorted_data = sorted(self.data, cmp=self.compare)
 
+    print "[SNM] Walking..."
     for i in range(0, len(sorted_data) - self.window_size):
       for j in range(i + 1, i + self.window_size):
         if self.is_same(sorted_data[i], sorted_data[j]):
