@@ -43,6 +43,6 @@ class DuplicateDetector(object):
 if __name__ == '__main__':
   reader = AddressesReader()
   analyzer = AddressesGoldAnalyzer()
-  comparators = [AddressesGoldComparator()]
+  comparators = [AddressesAddressComparator()]
 
   DuplicateDetector(reader, analyzer, comparators).find_duplicates()
