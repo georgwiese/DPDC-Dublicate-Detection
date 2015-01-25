@@ -45,3 +45,35 @@ class AddressesAddressComparator(SortKeyComparator):
         number = entity[7]
         zip_code = self.ADDRESS_CLEANER.clean_zip_code(entity[8])
         return zip_code + street_name + number
+
+
+class AddressesFirstNameComparator(SortKeyComparator):
+
+    def get_sort_key(self, entity):
+        first_name = entity[3]
+        last_name = entity[4]
+        return first_name + last_name
+
+
+class AddressesLastNameComparator(SortKeyComparator):
+
+    def get_sort_key(self, entity):
+        first_name = entity[3]
+        last_name = entity[4]
+        return last_name + first_name
+
+
+class AddressesFirstNameNoVocalsComparator(SortKeyComparator):
+
+    def get_sort_key(self, entity):
+        first_name = re.sub("[aeiou]", "", entity[3])
+        last_name = re.sub("[aeiou]", "", entity[4])
+        return first_name + last_name
+
+
+class AddressesLastNameNoVocalsComparator(SortKeyComparator):
+
+    def get_sort_key(self, entity):
+        first_name = re.sub("[aeiou]", "", entity[3])
+        last_name = re.sub("[aeiou]", "", entity[4])
+        return last_name + first_name
