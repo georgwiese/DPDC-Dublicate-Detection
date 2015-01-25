@@ -19,9 +19,7 @@ class AddressesGoldComparator(Comparator):
         return int(tuple1[12]) - int(tuple2[12])
 
 
-class AddressesAddressComparator(Comparator):
-
-    number_regex = re.compile(r"\D", re.IGNORECASE)
+class SortKeyComparator(Comparator):
 
     def compare(self, tuple1, tuple2):
         sk1 = self.get_sort_key(tuple1)
@@ -33,10 +31,17 @@ class AddressesAddressComparator(Comparator):
         else:
             return 1
 
+    def get_sort_key(self, entity): raise NotImplementedError()
+
+
+class AddressesAddressComparator(SortKeyComparator):
+
+    no_number_regex = re.compile(r"\D", re.IGNORECASE)
+
     def get_sort_key(self, entity):
         #6 straße nummer plz ort
         street_name = self.get_cleaned_street_name(entity[6])
-        number = self.get_cleaned_number(entity[7])
+        number = entity[7]
         zip_code = self.get_cleaned_zip_code(entity[8])
         return zip_code + street_name + number
 
@@ -49,7 +54,4 @@ class AddressesAddressComparator(Comparator):
             .replace('strasse', '')
             .replace('straße', '')
             .strip())
-
-    def get_cleaned_number(self, number):
-        return self.number_regex.sub('', number)
 
