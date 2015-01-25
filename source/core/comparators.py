@@ -1,6 +1,7 @@
 ## -*- coding: utf-8 -*-
 
 import re
+import cleaners
 
 class Comparator(object):
 
@@ -36,22 +37,11 @@ class SortKeyComparator(Comparator):
 
 class AddressesAddressComparator(SortKeyComparator):
 
-    no_number_regex = re.compile(r"\D", re.IGNORECASE)
+    ADDRESS_CLEANER = cleaners.AddressCleaner()
 
     def get_sort_key(self, entity):
         #6 straße nummer plz ort
-        street_name = self.get_cleaned_street_name(entity[6])
+        street_name = self.ADDRESS_CLEANER.clean_street_name(entity[6])
         number = entity[7]
-        zip_code = self.get_cleaned_zip_code(entity[8])
+        zip_code = self.ADDRESS_CLEANER.clean_zip_code(entity[8])
         return zip_code + street_name + number
-
-    def get_cleaned_zip_code(self, zip_code):
-        return zip_code.replace('D-', '')
-
-    def get_cleaned_street_name(self, street_name):
-        return (street_name
-            .replace('str.', '')
-            .replace('strasse', '')
-            .replace('straße', '')
-            .strip())
-
