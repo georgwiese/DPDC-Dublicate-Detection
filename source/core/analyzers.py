@@ -1,4 +1,5 @@
 import tokenizers
+import cleaners
 import Levenshtein
 
 class Analyzer(object):
@@ -46,6 +47,8 @@ class AbstractAddressesAnalyzers(Analyzer):
   SALUTATION_WEIGHT = 10
   TITLE_WEIGHT = 10
   NAME_WEIGHT = 50
+  ADDRESS_WEIGHT = 50
+  PHONE_WEIGHT = 50
   THRESHOLD = 0.85
 
   def is_same(self, tuple1, tuple2):
@@ -68,6 +71,8 @@ class AddressesAnalyzer(AbstractAddressesAnalyzers):
 
   def __init__(self):
     self.name_tokenizer = tokenizers.NameTokenizer()
+    self.address_tokenizer = tokenizers.AddressTokenizer()
+    self.phone_cleaner = cleaners.PhoneNumberCleaner()
 
   def salutation_similarity(self, tuple1, tuple2):
     return self.compare_distinct_values(tuple1[1], tuple2[1], self.SALUTATION_WEIGHT)
@@ -82,8 +87,18 @@ class AddressesAnalyzer(AbstractAddressesAnalyzers):
     return (self.NAME_WEIGHT, similarity)
 
   def address_similarity(self, tuple1, tuple2):
-    return (0, 0)
+    tokenset1 = self.address_tokenizer.tokenize(tuple1[6], tuple1[7], tuple1[8], tuple1[9])
+    tokenset2 = self.address_tokenizer.tokenize(tuple2[6], tuple2[7], tuple2[8], tuple2[9])
+    similarity = self.monge_elkan(tokenset1, tokenset2, Levenshtein.ratio)
+    return (self.ADDRESS_WEIGHT, similarity)
 
   def tel_similarity(self, tuple1, tuple2):
-    return (0, 0)
+    tel1 = self.phone_cleaner.clean(tuple1[10])
+    tel2 = self.phone_cleaner.clean(tuple2[10])
+
+    if not tel1 or not tel2:
+      return (0, 0)
+
+    similarity = Levenshtein.ratio(tel1, tel2)
+    return (self.PHONE_WEIGHT, similarity)
 
