@@ -8,6 +8,15 @@ class Comparator(object):
     def compare(self, tuple1, tuple2):
         raise NotImplementedError()
 
+    def remove_vocals(self, some_string):
+        return (some_string
+            .replace("a", "")
+            .replace("e", "")
+            .replace("i", "")
+            .replace("o", "")
+            .replace("u", "")
+        )
+
 
 class DummyComparator(Comparator):
 
@@ -66,14 +75,14 @@ class AddressesLastNameComparator(SortKeyComparator):
 class AddressesFirstNameNoVocalsComparator(SortKeyComparator):
 
     def get_sort_key(self, entity):
-        first_name = re.sub("[aeiou]", "", entity[3])
-        last_name = re.sub("[aeiou]", "", entity[4])
+        first_name = self.remove_vocals(entity[3])
+        last_name = self.remove_vocals(entity[4])
         return first_name + last_name
 
 
 class AddressesLastNameNoVocalsComparator(SortKeyComparator):
 
     def get_sort_key(self, entity):
-        first_name = re.sub("[aeiou]", "", entity[3])
-        last_name = re.sub("[aeiou]", "", entity[4])
+        first_name = self.remove_vocals(entity[3])
+        last_name = self.remove_vocals(entity[4])
         return last_name + first_name
