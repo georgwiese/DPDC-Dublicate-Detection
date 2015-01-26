@@ -49,7 +49,7 @@ class AbstractAddressesAnalyzers(Analyzer):
   NAME_WEIGHT = 50
   ADDRESS_WEIGHT = 50
   PHONE_WEIGHT = 50
-  THRESHOLD = 0.65
+  THRESHOLD = 0.83
 
   def is_same(self, tuple1, tuple2):
     similarity = self.combine_weighted([
