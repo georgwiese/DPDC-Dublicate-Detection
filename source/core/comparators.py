@@ -58,18 +58,38 @@ class AddressesAddressComparator(SortKeyComparator):
 
 class AddressesFirstNameComparator(SortKeyComparator):
 
+    ADDRESS_CLEANER = cleaners.AddressCleaner()
+
     def get_sort_key(self, entity):
         first_name = entity[3]
         last_name = entity[4]
-        return first_name + last_name
+        zip_code = self.ADDRESS_CLEANER.clean_zip_code(entity[8])
+        return first_name + last_name + zip_code
 
 
 class AddressesLastNameComparator(SortKeyComparator):
 
+    ADDRESS_CLEANER = cleaners.AddressCleaner()
+
     def get_sort_key(self, entity):
         first_name = entity[3]
         last_name = entity[4]
-        return last_name + first_name
+        zip_code = self.ADDRESS_CLEANER.clean_zip_code(entity[8])
+        return last_name + first_name + zip_code
+
+
+class AddressesNamesReversedComparator(SortKeyComparator):
+
+    ADDRESS_CLEANER = cleaners.AddressCleaner()
+
+    def get_sort_key(self, entity):
+        first_name = entity[3]
+        last_name = entity[4]
+        zip_code = self.ADDRESS_CLEANER.clean_zip_code(entity[8])
+        if first_name < last_name:
+            return first_name + last_name + zip_code
+        else:
+            return last_name + first_name + zip_code
 
 
 class AddressesFirstNameNoVocalsComparator(SortKeyComparator):
