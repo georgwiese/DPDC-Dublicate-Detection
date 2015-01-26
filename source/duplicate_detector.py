@@ -1,4 +1,5 @@
 import os
+import sys
 
 from core.snm import SortedNeighborhoodMethod
 from core.tc import TransitiveClosure
@@ -9,8 +10,7 @@ from data.reader import *
 class DuplicateDetector(object):
 
   WINDOW_SIZE = 20
-  OUT_DIR = '../out/'
-  OUT_FILE = 'result.txt'
+  OUT_FILE = 'results.txt'
 
   def __init__(self, reader, analyzer, comparators):
     self.reader = reader
@@ -33,25 +33,23 @@ class DuplicateDetector(object):
     duplicate_tuples = TransitiveClosure(duplicates).get_tuples()
 
     print "Writing file..."
-    if not os.path.exists(self.OUT_DIR):
-      os.makedirs(self.OUT_DIR)
-    with open(self.OUT_DIR + self.OUT_FILE, 'w') as output_file:
+    with open(self.OUT_FILE, 'w') as output_file:
       for duplicate_tuple in duplicate_tuples:
         output_file.write("%d,%d\n" % duplicate_tuple)
 
 
 if __name__ == '__main__':
-  reader = AddressesReader()
-  #analyzer = AddressesGoldAnalyzer()
+  if len(sys.argv) != 2:
+    print "Usage: python duplicate_detector path/to/csv.file"
+    exit(42)
+
+  reader = AddressesReader(sys.argv[1])
   analyzer = AddressesAnalyzer()
   comparators = [
-      #AddressesGoldComparator(),
       AddressesAddressComparator(),
       AddressesFirstNameComparator(),
       AddressesLastNameComparator(),
       AddressesNamesReversedComparator(),
-      #AddressesFirstNameNoVocalsComparator(),
-      #AddressesLastNameNoVocalsComparator(),
   ]
 
   DuplicateDetector(reader, analyzer, comparators).find_duplicates()
