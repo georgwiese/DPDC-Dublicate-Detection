@@ -8,8 +8,8 @@ def print_goldstandard_diff(resultfile, goldstandard):
 
   fp = result_tuples.difference(gold_tuples)
   fn = gold_tuples.difference(result_tuples)
-  print "Result, but not gold standard (FP):", fp
-  print "Gold standard, but not result (FN):", fn
+  print "Result, but not gold standard (FP):", len(fp)
+  print "Gold standard, but not result (FN):", len(fn)
 
   precision = float(len(result_tuples) - len(fp)) / len(result_tuples)
   recall = float(len(result_tuples) - len(fp)) / len(gold_tuples)
