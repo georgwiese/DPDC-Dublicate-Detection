@@ -1,4 +1,4 @@
-# DPDC-Dublicate-Detection
+# DPDC-Duplicate-Detection
 
 Duplicate Detection Algorithm, developed as part of the Data Profiling / Data Cleansing seminar
 
